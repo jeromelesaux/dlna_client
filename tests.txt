@@ -1,0 +1,1 @@
+curl -v -H 'SOAPACTION: "urn:schemas-upnp-org:service:ContentDirectory:1#Browse"'  -H 'content-type: text/xml ;charset="utf-8"' "http://10.188.2.125:8200/ctl/ContentDir" -d "@browse.xml"curl -v -H 'SOAPACTION: "urn:schemas-upnp-org:service:ContentDirectory:1#Search"'  -H 'content-type: text/xml ;charset="utf-8"' "http://10.188.2.125:8200/ctl/ContentDir" -d "@search.xml" 
