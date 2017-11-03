@@ -5,7 +5,7 @@
         <ns0:Search>
             <Filter>*</Filter>
             <ContainerID>*</ContainerID>
-            <SearchCriteria></SearchCriteria>
+            <SearchCriteria>(dc:title contains "star wars") and (upnp:class derivedfrom "object.item.videoItem")</SearchCriteria>
             <StartingIndex>0</StartingIndex>
             <RequestedCount>0</RequestedCount>
             <SortCriteria/>
