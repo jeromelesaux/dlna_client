@@ -150,6 +150,7 @@ func main() {
 				if err != nil {
 					fmt.Fprintf(os.Stderr,"Error while getting content directory client %v", err)
 				} else {
+
 					client := NewUpnpContentDirectoryClient(clients[0].Location)
 					result, returnNumber, totalMatches, update, err := client.Search("*", "dc:title contains \"" + *pattern + "\"", "*", "0", "0", "")
 					if err != nil {
