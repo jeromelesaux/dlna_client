@@ -14,6 +14,7 @@ import (
 	"os"
 )
 var pattern = flag.String("pattern","","Pattern to find of the servers")
+var typefile = flag.String("type","*", "type of the media to return values are video, image, audio")
 var auto = flag.Bool("auto", true, "do the search on all media server available")
 var list = flag.String("list", "", "get content from server uri")
 var URN_ContentDirectory_1 = "urn:schemas-upnp-org:service:ContentDirectory:1"
@@ -140,6 +141,16 @@ type Res struct {
 
 func main() {
 	flag.Parse()
+	mediaType := ""
+
+	if *typefile != "" {
+		switch (*typefile) {
+		case "video" : mediaType = ".videoitem"
+		case "audio" : mediaType = ".audioitem"
+		case "image" : mediaType = ".imageitem"
+		}
+	}
+
 	if *auto == true {
 		devices, err := goupnp.DiscoverDevices("urn:schemas-upnp-org:device:MediaServer:1")
 		if err != nil {
@@ -152,11 +163,11 @@ func main() {
 				} else {
 
 					client := NewUpnpContentDirectoryClient(clients[0].Location)
-					result, returnNumber, totalMatches, update, err := client.Search("*", "dc:title contains \"" + *pattern + "\"", "*", "0", "0", "")
+					result, returnNumber, totalMatches, update, err := client.Search("*", "dc:title contains \"" + *pattern + "\" and upnp:class derivedfrom \"object.item" + mediaType +"\"", "*", "0", "0", "")
 					if err != nil {
-						fmt.Fprintf(os.Stderr,"Error while getting content directory client %v from location :%", err, d.Location)
+						fmt.Fprintf(os.Stderr,"Error while getting content directory client %v from location :%v", err, d.Location)
 					} else {
-						fmt.Printf("result  %d, %d, %d\n", returnNumber, totalMatches, update)
+						fmt.Printf("result  %d, %d, %d for server %s\n", returnNumber, totalMatches, update, client.Url.String())
 						r := &DIDLLite{}
 						err := xml.Unmarshal([]byte(result), r)
 						if err != nil {

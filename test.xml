@@ -1,0 +1,20 @@
+<item id="3$B$0" parentID="3$B" restricted="1" refID="64$0">
+    <dc:title>20130404_164134</dc:title>
+    <upnp:class>object.item.imageItem.photo</upnp:class>
+    <dc:creator>SAMSUNG GT-I9305</dc:creator>
+    <dc:date>2013-04-04T16:41:34</dc:date>
+    <res size="1834200" resolution="3264x2448"
+         protocolInfo="http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG;DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=00F00000000000000000000000000000">
+        http://10.188.2.125:8200/MediaItems/22.jpg
+    </res>
+    <res resolution="1024x767"
+         protocolInfo="http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_MED;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=00F00000000000000000000000000000">
+        http://10.188.2.125:8200/Resized/22.jpg?width=1024,height=767
+    </res>
+    <res resolution="640x478" protocolInfo="http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=00F00000000000000000000000000000">
+        http://10.188.2.125:8200/Resized/22.jpg?width=640,height=478
+    </res>
+    <res resolution="160x119" protocolInfo="http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN;DLNA.ORG_CI=1;DLNA.ORG_FLAGS=00F00000000000000000000000000000">
+        http://10.188.2.125:8200/Resized/22.jpg?width=160,height=119
+    </res>
+</item>
