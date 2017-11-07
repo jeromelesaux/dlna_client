@@ -18,9 +18,10 @@ import (
 var pattern = flag.String("pattern", "", "Pattern to find of the servers")
 var typefile = flag.String("type", "*", "type of the media to return values are video, image, audio")
 var auto = flag.Bool("auto", true, "do the search on all media server available")
-var list = flag.String("list", "", "get content from server uri")
+//var list = flag.String("list", "", "get content from server uri")
 var device = flag.String("device", "", "short name device stored into configuration to send the results")
 var configureclient = flag.Bool("configurerenderer", false, "configure the client renderer")
+var configDisplay = flag.Bool("config",false,"display current configuration.")
 var rendererConfigName = "renderers.json"
 var URN_ContentDirectory_1 = "urn:schemas-upnp-org:service:ContentDirectory:1"
 
@@ -65,7 +66,7 @@ func (c *UpnpContentDirectoryClient) Search(ContainerID string, SearchCriteria s
 		fmt.Fprintln(os.Stderr, err)
 		return "", 0, 0, 0, err
 	}
-	fmt.Fprintf(os.Stderr, "Envelope SOAP:%s", string(w.String()))
+	//fmt.Fprintf(os.Stderr, "Envelope SOAP:%s", string(w.String()))
 	httpClient := &http.Client{}
 	httpRequest, err := http.NewRequest("POST", c.Url.String(), bytes.NewBuffer(w.Bytes()))
 	if err != nil {
@@ -199,6 +200,16 @@ func main() {
 		return
 	}
 
+	if *configDisplay == true {
+		fmt.Printf("[Num]\t-\tRenderer's name\t:\tRenderer's location\n")
+		i:= 0
+		for _, v := range conf.Renderers {
+			fmt.Printf("[%d]\t-\t%s\t:\t%s\n",i , v.Name, v.Location)
+			i++
+		}
+		return
+	}
+
 	if *configureclient == true {
 		controls := make(map[int]Renderer, 0)
 		i := 0
@@ -220,7 +231,7 @@ func main() {
 			}
 		}
 		if len(controls) == 0 {
-			fmt.Fprint(os.Stderr,"No renderer devices found quiting.\n")
+			fmt.Fprint(os.Stderr,"No renderer devices found quit.\n")
 			return
 		}
 		var number int
@@ -303,12 +314,12 @@ func main() {
 				}
 			}
 			// send files to display
-			url, err := url.Parse(renderer.Location)
+			urlRenderer, err := url.Parse(renderer.Location)
 			if err != nil {
-				fmt.Fprintf(os.Stderr,"cannot read url %s with error %v\n",renderer.Location,err)
+				fmt.Fprintf(os.Stderr,"cannot read renderer url %s with error %v\n",renderer.Location,err)
 				return
 			}
-			clients,err := av1.NewAVTransport1ClientsByURL(url)
+			clients,err := av1.NewAVTransport1ClientsByURL(urlRenderer)
 			if err != nil {
 				fmt.Fprintf(os.Stderr,"cannot connect to renderer device with error %v\n",err)
 				return
