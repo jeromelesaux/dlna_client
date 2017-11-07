@@ -21,7 +21,7 @@ var auto = flag.Bool("auto", true, "do the search on all media server available"
 //var list = flag.String("list", "", "get content from server uri")
 var device = flag.String("device", "", "short name device stored into configuration to send the results")
 var configureclient = flag.Bool("configurerenderer", false, "configure the client renderer")
-var configDisplay = flag.Bool("config",false,"display current configuration.")
+var configDisplay = flag.Bool("config", false, "display current configuration.")
 var rendererConfigName = "renderers.json"
 var URN_ContentDirectory_1 = "urn:schemas-upnp-org:service:ContentDirectory:1"
 
@@ -202,9 +202,9 @@ func main() {
 
 	if *configDisplay == true {
 		fmt.Printf("[Num]\t-\tRenderer's name\t:\tRenderer's location\n")
-		i:= 0
+		i := 0
 		for _, v := range conf.Renderers {
-			fmt.Printf("[%d]\t-\t%s\t:\t%s\n",i , v.Name, v.Location)
+			fmt.Printf("[%d]\t-\t%s\t:\t%s\n", i, v.Name, v.Location)
 			i++
 		}
 		return
@@ -231,7 +231,7 @@ func main() {
 			}
 		}
 		if len(controls) == 0 {
-			fmt.Fprint(os.Stderr,"No renderer devices found quit.\n")
+			fmt.Fprint(os.Stderr, "No renderer devices found quit.\n")
 			return
 		}
 		var number int
@@ -245,7 +245,7 @@ func main() {
 		fmt.Printf("\nplease enter the short name associated to this device (tv,box for instance) ? ")
 		fmt.Scanf("%s", &shortName)
 		fmt.Printf("\nyou set %s (%s - %s) as new device renderer\n", shortName, controls[number].Name, controls[number].Location)
-		conf.Renderers[controls[number].Name] = controls[number]
+		conf.Renderers[shortName] = controls[number]
 		err = SaveConfig(conf)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error while saving configuration file %v\n", err)
@@ -265,21 +265,21 @@ func main() {
 	}
 
 	if *auto == true {
-		files := make([]string,0)
+		files := make([]string, 0)
 		var renderer Renderer
 		if len(conf.Renderers) != 1 && *device == "" {
-			fmt.Fprintf(os.Stderr,"cannot the device to display result, you've got %d devices configured and you did not set the device short name\n",len(conf.Renderers))
+			fmt.Fprintf(os.Stderr, "cannot the device to display result, you've got %d devices configured and you did not set the device short name\n", len(conf.Renderers))
 			return
 		}
 		if *device != "" {
 			renderer = conf.Renderers[*device]
 		} else {
-			for _,v := range conf.Renderers {
+			for _, v := range conf.Renderers {
 				renderer = v
 				break
 			}
 		}
-		fmt.Printf("renderer device selected %s\n",renderer.Name)
+		fmt.Printf("renderer device selected %s\n", renderer.Name)
 		devices, err := goupnp.DiscoverDevices("urn:schemas-upnp-org:device:MediaServer:1")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error %v", err.Error())
@@ -305,7 +305,7 @@ func main() {
 								value := "nothing to display"
 								if len(item.Results) > 0 {
 									value = item.Results[0].Value
-									files = append(files,value)
+									files = append(files, value)
 								}
 								fmt.Printf("%s, %s, %s\n", item.Title, item.Class, value)
 							}
@@ -316,28 +316,21 @@ func main() {
 			// send files to display
 			urlRenderer, err := url.Parse(renderer.Location)
 			if err != nil {
-				fmt.Fprintf(os.Stderr,"cannot read renderer url %s with error %v\n",renderer.Location,err)
+				fmt.Fprintf(os.Stderr, "cannot read renderer url %s with error %v\n", renderer.Location, err)
 				return
 			}
-			clients,err := av1.NewAVTransport1ClientsByURL(urlRenderer)
+			clients, err := av1.NewAVTransport1ClientsByURL(urlRenderer)
 			if err != nil {
-				fmt.Fprintf(os.Stderr,"cannot connect to renderer device with error %v\n",err)
+				fmt.Fprintf(os.Stderr, "cannot connect to renderer device with error %v\n", err)
 				return
 			}
-			i:=0
-			for _,f := range files {
-				if i == 0 {
-					if err := clients[0].SetAVTransportURI(0, f, ""); err != nil {
-						fmt.Fprintf(os.Stderr, "error while sending media %s to %s  with error %v\n", f, renderer.Name, err)
-					}
-					i++
-				} else {
-					if err := clients[0].SetNextAVTransportURI(0, f, ""); err != nil {
-						fmt.Fprintf(os.Stderr, "error while sending media %s to %s  with error %v\n", f, renderer.Name, err)
-					}
+			for _, f := range files {
+
+				if err := clients[0].SetAVTransportURI(0, f, ""); err != nil {
+					fmt.Fprintf(os.Stderr, "error while sending media %s to %s  with error %v\n", f, renderer.Name, err)
 				}
 			}
-			clients[0].Play(0,"1")
+			clients[0].Play(0, "1")
 		}
 	} else {
 		flag.Usage()
