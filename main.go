@@ -310,19 +310,19 @@ func main() {
 			}
 			clients,err := av1.NewAVTransport1ClientsByURL(url)
 			if err != nil {
-				fmt.Fprint(os.Stderr,"cannot discover renderer device with error %v\n",err)
+				fmt.Fprintf(os.Stderr,"cannot connect to renderer device with error %v\n",err)
 				return
 			}
 			i:=0
 			for _,f := range files {
 				if i == 0 {
 					if err := clients[0].SetAVTransportURI(0, f, ""); err != nil {
-						fmt.Fprintf(os.Stderr, "error while sending media %s to %s  with error %v", f, renderer.Name, err)
+						fmt.Fprintf(os.Stderr, "error while sending media %s to %s  with error %v\n", f, renderer.Name, err)
 					}
 					i++
 				} else {
 					if err := clients[0].SetNextAVTransportURI(0, f, ""); err != nil {
-						fmt.Fprintf(os.Stderr, "error while sending media %s to %s  with error %v", f, renderer.Name, err)
+						fmt.Fprintf(os.Stderr, "error while sending media %s to %s  with error %v\n", f, renderer.Name, err)
 					}
 				}
 			}
