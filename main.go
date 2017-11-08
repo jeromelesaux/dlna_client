@@ -25,6 +25,7 @@ var previousTrack = flag.Bool("previous", false, "send to media renderer to play
 var pauseTrack = flag.Bool("pause", false, "send to media renderer to pause the media")
 var playTrack = flag.Bool("play", false, "send to media renderer to play the media")
 var stopTrack = flag.Bool("stop", false, "send to media renderer to stop the media")
+var lastDevice = flag.Bool("lastdevice", false, "return the last device used.")
 
 type RendererAction int
 
@@ -160,6 +161,7 @@ type Res struct {
 type Renderer struct {
 	Name     string `json:"name"`
 	Location string `json:"location"`
+	Used     bool   `json:"used"`
 }
 
 type RenderersConfig struct {
@@ -173,6 +175,15 @@ func (rc *RenderersConfig) String() {
 		fmt.Printf("[%d]\t-\t%s\t:\t%s\n", i, v.Name, v.Location)
 		i++
 	}
+}
+
+func (rc *RenderersConfig) LastUsed() string {
+	for k, v := range rc.Renderers {
+		if v.Used {
+			return k
+		}
+	}
+	return ""
 }
 
 func (rc *RenderersConfig) Configure() error {
@@ -239,6 +250,9 @@ func ReadConfig() (*RenderersConfig, error) {
 		fmt.Fprintf(os.Stderr, "error while decoding configuration file with error %v\n", err)
 		return config, err
 	}
+	for _, v := range config.Renderers {
+		v.Used = false
+	}
 	return config, err
 }
 
@@ -272,6 +286,7 @@ func SelectRenderer(conf *RenderersConfig) (*Renderer, error) {
 			break
 		}
 	}
+	renderer.Used = true
 	fmt.Printf("renderer device selected %s\n", renderer.Name)
 	return renderer, nil
 }
@@ -333,6 +348,14 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error while reading configuration file %v\n", err)
 		return
+	}
+
+	if *lastDevice == true {
+		if rendererKey := conf.LastUsed(); rendererKey != "" {
+			fmt.Printf("%s", rendererKey)
+			return
+		}
+		fmt.Fprintf(os.Stderr, "No device found.")
 	}
 
 	if *nextTrack == true {
