@@ -1,18 +1,18 @@
 package main
 
 import (
-	"flag"
 	"encoding/xml"
+	"flag"
 
-	"github.com/huin/goupnp/dcps/av1"
-	"net/url"
 	"bytes"
-	"net/http"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/huin/goupnp"
-	"errors"
+	"github.com/huin/goupnp/dcps/av1"
+	"net/http"
+	"net/url"
 	"os"
-	"encoding/json"
 )
 
 var pattern = flag.String("pattern", "", "Pattern to find on the media servers")
@@ -29,7 +29,7 @@ var stopTrack = flag.Bool("stop", false, "send to media renderer to stop the med
 type RendererAction int
 
 const (
-	PLAY     RendererAction = iota
+	PLAY RendererAction = iota
 	STOP
 	PREVIOUS
 	NEXT
@@ -50,7 +50,7 @@ type SoapFault struct {
 }
 
 type SoapBody struct {
-	XMLName        xml.Name                            `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
+	XMLName        xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
 	Fault          *SoapFault
 	Search         *UpnpContentDirectorySearchRequest  `xml:"urn:schemas-upnp-org:service:ContentDirectory:1 Search"`
 	SearchResponse *UpnpContentDirectorySearchResponse `xml:"urn:schemas-upnp-org:service:ContentDirectory:1 SearchResponse"`
@@ -60,7 +60,7 @@ type UpnpContentDirectoryClient struct {
 	Url *url.URL `xml:"-"`
 }
 
-func NewUpnpContentDirectoryClient(url *url.URL) (*UpnpContentDirectoryClient) {
+func NewUpnpContentDirectoryClient(url *url.URL) *UpnpContentDirectoryClient {
 	return &UpnpContentDirectoryClient{Url: url}
 }
 
@@ -287,7 +287,7 @@ func PerformAction(renderer *Renderer, action RendererAction) error {
 			fmt.Fprintf(os.Stderr, "Error while getting content transport client %v\n", err)
 			return err
 		}
-		switch (action) {
+		switch action {
 		case PLAY:
 			fmt.Fprintf(os.Stderr, "send message play media to renderer\n")
 			if err := t[0].Play(0, "1"); err != nil {
@@ -348,7 +348,7 @@ func main() {
 		if err != nil {
 			return
 		}
-		PerformAction(renderer,PREVIOUS)
+		PerformAction(renderer, PREVIOUS)
 		return
 	}
 	if *playTrack == true {
@@ -356,7 +356,7 @@ func main() {
 		if err != nil {
 			return
 		}
-		PerformAction(renderer,PLAY)
+		PerformAction(renderer, PLAY)
 		return
 	}
 
@@ -365,7 +365,7 @@ func main() {
 		if err != nil {
 			return
 		}
-		PerformAction(renderer,STOP)
+		PerformAction(renderer, STOP)
 		return
 	}
 
@@ -374,7 +374,7 @@ func main() {
 		if err != nil {
 			return
 		}
-		PerformAction(renderer,PAUSE)
+		PerformAction(renderer, PAUSE)
 		return
 	}
 
@@ -389,7 +389,7 @@ func main() {
 	}
 
 	if *typefile != "" {
-		switch (*typefile) {
+		switch *typefile {
 		case "video":
 			mediaType = ".videoitem"
 		case "audio":
@@ -416,7 +416,7 @@ func main() {
 				} else {
 
 					client := NewUpnpContentDirectoryClient(clients[0].Location)
-					result, returnNumber, totalMatches, update, err := client.Search("*", "dc:title contains \"" + *pattern+"\" and upnp:class derivedfrom \"object.item"+mediaType+"\"", "*", "0", "0", "")
+					result, returnNumber, totalMatches, update, err := client.Search("*", "dc:title contains \""+*pattern+"\" and upnp:class derivedfrom \"object.item"+mediaType+"\"", "*", "0", "0", "")
 					if err != nil {
 						fmt.Fprintf(os.Stderr, "Error while getting content directory client %v from location :%v\n", err, d.Location)
 					} else {

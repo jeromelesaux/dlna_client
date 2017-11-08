@@ -2,3 +2,6 @@
 /.idea/
 *.iml
 dlna_client
+*.log
+DlnaClient-*
+*.json
