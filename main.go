@@ -304,31 +304,31 @@ func PerformAction(renderer *Renderer, action RendererAction) error {
 		}
 		switch action {
 		case PLAY:
-			fmt.Fprintf(os.Stderr, "send message play media to renderer\n")
+			fmt.Fprint(os.Stderr, "send message play media to renderer\n")
 			if err := t[0].Play(0, "1"); err != nil {
 				fmt.Fprintf(os.Stderr, "Error while sending play message from transport client %v\n", err)
 				return err
 			}
 		case NEXT:
-			fmt.Fprintf(os.Stderr, "send message next media to renderer\n")
+			fmt.Fprint(os.Stderr, "send message next media to renderer\n")
 			if err := t[0].Next(0); err != nil {
 				fmt.Fprintf(os.Stderr, "Error while sending next message to transport client %v\n", err)
 				return err
 			}
 		case PREVIOUS:
-			fmt.Fprintf(os.Stderr, "send message previous media to renderer\n")
+			fmt.Fprint(os.Stderr, "send message previous media to renderer\n")
 			if err := t[0].Previous(0); err != nil {
 				fmt.Fprintf(os.Stderr, "Error while sending previous message to transport client %v\n", err)
 				return err
 			}
 		case PAUSE:
-			fmt.Fprintf(os.Stderr, "send message pause media to renderer\n")
+			fmt.Fprint(os.Stderr, "send message pause media to renderer\n")
 			if err := t[0].Pause(0); err != nil {
 				fmt.Fprintf(os.Stderr, "Error while sending pause message to transport client %v\n", err)
 				return err
 			}
 		case STOP:
-			fmt.Fprintf(os.Stderr, "send message stop media to renderer\n")
+			fmt.Fprint(os.Stderr, "send message stop media to renderer\n")
 			if err := t[0].Stop(0); err != nil {
 				fmt.Fprintf(os.Stderr, "Error while sending stop message to transport client %v\n", err)
 				return err
@@ -355,7 +355,7 @@ func main() {
 			fmt.Printf("%s", rendererKey)
 			return
 		}
-		fmt.Fprintf(os.Stderr, "No device found.")
+		fmt.Fprint(os.Stderr, "No device found.")
 	}
 
 	if *nextTrack == true {
