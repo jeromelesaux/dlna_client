@@ -19,13 +19,14 @@ var pattern = flag.String("pattern", "", "Pattern to find on the media servers")
 var typefile = flag.String("mediatype", "*", "type of the media to return values are video, image, audio")
 var device = flag.String("device", "", "short name device stored into configuration to send the results")
 var configureclient = flag.Bool("configurerenderer", false, "configure the client renderer")
-var configDisplay = flag.Bool("configurationdisplay", false, "display current configuration.")
-var nextTrack = flag.Bool("next", false, "send to media renderer to play the next media")
-var previousTrack = flag.Bool("previous", false, "send to media renderer to play the previous media")
-var pauseTrack = flag.Bool("pause", false, "send to media renderer to pause the media")
-var playTrack = flag.Bool("play", false, "send to media renderer to play the media")
-var stopTrack = flag.Bool("stop", false, "send to media renderer to stop the media")
-var lastDevice = flag.Bool("lastdevice", false, "return the last device used.")
+var configuredisplay = flag.Bool("configuredisplay", false, "display current configuration.")
+var nexttrack = flag.Bool("next", false, "send to media renderer to play the next media")
+var previoustrack = flag.Bool("previous", false, "send to media renderer to play the previous media")
+var pausetrack = flag.Bool("pause", false, "send to media renderer to pause the media")
+var playtrack = flag.Bool("play", false, "send to media renderer to play the media")
+var stoptrack = flag.Bool("stop", false, "send to media renderer to stop the media")
+var lastdevice = flag.Bool("lastdevice", false, "return the last device used.")
+var displayconfiguration = flag.Bool("displayconfiguration", false, "display configurations")
 
 type RendererAction int
 
@@ -350,7 +351,12 @@ func main() {
 		return
 	}
 
-	if *lastDevice == true {
+	if *displayconfiguration == true {
+		conf.String()
+		return
+	}
+
+	if *lastdevice == true {
 		if rendererKey := conf.LastUsed(); rendererKey != "" {
 			fmt.Printf("%s", rendererKey)
 			return
@@ -358,7 +364,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "No device found.")
 	}
 
-	if *nextTrack == true {
+	if *nexttrack == true {
 		renderer, err := SelectRenderer(conf)
 		if err != nil {
 			return
@@ -366,7 +372,7 @@ func main() {
 		PerformAction(renderer, NEXT)
 		return
 	}
-	if *previousTrack == true {
+	if *previoustrack == true {
 		renderer, err := SelectRenderer(conf)
 		if err != nil {
 			return
@@ -374,7 +380,7 @@ func main() {
 		PerformAction(renderer, PREVIOUS)
 		return
 	}
-	if *playTrack == true {
+	if *playtrack == true {
 		renderer, err := SelectRenderer(conf)
 		if err != nil {
 			return
@@ -383,7 +389,7 @@ func main() {
 		return
 	}
 
-	if *stopTrack == true {
+	if *stoptrack == true {
 		renderer, err := SelectRenderer(conf)
 		if err != nil {
 			return
@@ -392,7 +398,7 @@ func main() {
 		return
 	}
 
-	if *pauseTrack == true {
+	if *pausetrack == true {
 		renderer, err := SelectRenderer(conf)
 		if err != nil {
 			return
@@ -401,7 +407,7 @@ func main() {
 		return
 	}
 
-	if *configDisplay == true {
+	if *configuredisplay == true {
 		conf.String()
 		return
 	}
