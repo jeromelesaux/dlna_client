@@ -8,11 +8,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/huin/goupnp"
-	"github.com/huin/goupnp/dcps/av1"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/huin/goupnp"
+	"github.com/huin/goupnp/dcps/av1"
 )
 
 var pattern = flag.String("pattern", "", "Pattern to find on the media servers")
@@ -192,7 +193,7 @@ func (rc *RenderersConfig) Configure() error {
 	i := 0
 	devices, err := goupnp.DiscoverDevices("urn:schemas-upnp-org:device:MediaRenderer:1")
 	if err != nil {
-		fmt.Fprint(os.Stderr, "cannot discover renderer device with error %v\n", err)
+		fmt.Fprintf(os.Stderr, "cannot discover renderer device with error %v\n", err)
 	} else {
 		for _, d := range devices {
 			control, err := av1.NewAVTransport1ClientsByURL(d.Location)

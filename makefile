@@ -5,8 +5,8 @@ MV=mv
 
 SOURCEDIR=.
 SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
-GOOS=linux
-GOARCH=amd64
+#GOOS=linux
+#GOARCH=amd64
 
 VERSION:=1.0
 PREVIOUS_VERSION=$(shell echo $$((${VERSION} - 1)))
@@ -18,7 +18,7 @@ PACKAGES := github.com/huin/goupnp
 
 LIBS=
 
-LDFLAGS=-ldflags "-w -race"
+LDFLAGS=-ldflags "-w"
 
 
 
@@ -41,8 +41,7 @@ audit: deps
 
 deps: init
 		@echo "    Download packages"
-		@$(foreach element,$(PACKAGES),go get -d -v -insecure $(element);)
-		@go install
+		@go mod download
 
 init: clean
 		@echo "    Init of the project"
